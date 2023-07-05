@@ -87,12 +87,13 @@ class Engine(object):
             success, output = False, b''
             e = task.exception()
             if e is not None:
-                logging.warning('Function handler raises exception: %s' % str(e))
+                logging.warning(f'Function handler raises exception: {str(e)}')
             elif isinstance(task.result(), bytes):
                 success, output = True, task.result()
             else:
                 logging.error('Function handler returns non-byte object')
             self._worker.on_func_execution_finished(handle, success, output)
+
         context = Context(self, handle)
         if self._worker.is_grpc_service:
             task = asyncio.create_task(self._handler(context, method, input_))
@@ -113,7 +114,7 @@ class Engine(object):
             else:
                 logging.error('Function handler returns non-byte object')
         except Exception as e:
-            logging.warning('Function handler raises exception: %s' % str(e))
+            logging.warning(f'Function handler raises exception: {str(e)}')
         self._worker.on_func_execution_finished(handle, success, output)
 
     def invoke_func(self, parent_handle, func_name, input_):
